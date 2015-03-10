@@ -1,0 +1,69 @@
+/**
+ * Triangle Pattern Recursion
+ * @author Vargas
+ *
+ */
+public class TrianglePattern {
+	
+	public static void main(String[] args) {
+		trianglePattern(3,10);
+	}
+
+	/*
+	 * Triangle Pattern Recursion
+	 */
+	public static void trianglePattern(int min, int max)
+	{
+
+		int limit = min;
+		if(min == max)
+		{
+			printStars(min);
+			System.out.println("");
+		}
+		else
+			countUp(min, max, limit);
+	}
+	
+	/*
+	 * Stars counting up Recursion
+	 */
+	public static void countUp(int min, int max, int limit)
+	{
+		if(min <= max)
+		{		
+			printStars(min);
+			countUp(min + 1, max, limit);
+		}
+		else
+			countDown(min - 1, max, limit);		
+	}
+	
+	/*
+	 * Stars counting down Recursion
+	 */
+	private static void countDown(int min, int max, int limit)
+	{
+		if(min >= limit)
+		{
+			printStars(min);
+			 countDown(min - 1, max, limit);
+		}
+	}
+	
+	/*
+	 * Print Stars Recursion
+	 */
+	public static void printStars(int s)
+	{
+		if(s <= 0)
+		{
+			System.out.println();
+		}
+		else
+		{
+			System.out.print("*");
+			printStars(s-1);
+		}
+	}
+}
