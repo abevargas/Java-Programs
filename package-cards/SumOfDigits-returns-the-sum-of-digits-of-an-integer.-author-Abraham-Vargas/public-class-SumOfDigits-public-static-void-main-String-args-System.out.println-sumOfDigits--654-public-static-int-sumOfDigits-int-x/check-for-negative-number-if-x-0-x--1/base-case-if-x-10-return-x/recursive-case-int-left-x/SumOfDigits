@@ -1,0 +1,30 @@
+package cards;
+
+/**
+ * SumOfDigits returns the sum of digits of an integer.
+ * 
+ * @author Abraham Vargas
+ *
+ */
+public class SumOfDigits {
+
+	public static void main(String[] args) {
+		System.out.println(sumOfDigits(-654));
+	}
+	
+	public static int sumOfDigits(int x)
+	{
+		// check for negative number
+		if(x<0)
+			x *= -1;
+		
+		// base case
+		if(x<10)
+			return x;
+		
+		// recursive case
+		int left = x/10;
+		int right = x%10;
+		return sumOfDigits(left) + sumOfDigits(right);
+	}
+}
