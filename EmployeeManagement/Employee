@@ -1,0 +1,190 @@
+import java.util.Random;
+import java.util.Calendar;
+
+/**
+ * Employee class contains sub-classes of Employee
+ * 
+ * @authors Abraham Vargas
+ * 
+ */
+public class Employee {
+	
+	// Employee fields
+	protected String employeeName;
+	protected String employeeID; // XXX-L X:1-9, L:A-M
+	protected int hireYear; // 1960-current
+	protected double weeklyEarnings;    // amount earned by employee less than
+										// $10,000
+	// Structures to hold random first and last names
+	protected static String firstNames[] = { "Abraham", "Jim", "Greg", "Vasil", "Amaris", "Domenique" };
+	protected static String lastNames[] = { "Vargas", "Halter", "Basile", "Hnatyshin", "Ortiz", "Rodriguez" };
+	
+	// Class constants
+	protected static final int MIN_HIRE_YEAR = 1960;
+	protected static final int CURRENT_YEAR = Calendar.getInstance().get(Calendar.YEAR);
+	private static final double MIN_WEEKLY_EARNINGS = 1000;
+	private static final double MAX_WEEKLY_EARNINGS = 10000;
+	protected static final Random r = new Random();
+
+	/**
+	 * Default Constructor
+	 */
+	public Employee() {
+		getRandomEmployee();
+	}
+
+	/**
+	 * Class Constructor
+	 * 
+	 * @param name
+	 *            of employee
+	 * @param year
+	 *            employee hired
+	 */
+	public Employee(String name, int year, double earnings, String id) {
+		this.employeeName = name;
+		checkHiredYear(year);
+		checkWeeklyEarnings(earnings);
+		checkEmployeeID(id);		
+	}
+
+	// Generates an employee with random first name, last name, and year hired
+	public static Employee getRandomEmployee() {
+		int minEarnings = 1000;		//int value of MIN_WEEKLY_EARNINGS
+		int maxEarnings = 10000;	//int value of MAX_WEEKLY_EARNINGS
+		
+		String name = firstNames[r.nextInt(firstNames.length)] + " "
+				+ lastNames[r.nextInt(lastNames.length)];
+		int year = r.nextInt(CURRENT_YEAR - MIN_HIRE_YEAR + 1) + MIN_HIRE_YEAR;
+		double earnings = r.nextInt(maxEarnings - minEarnings + 1) + MIN_WEEKLY_EARNINGS;		
+		String id = randomEmployeeID();
+
+		return new Employee(name, year, earnings, id);
+	}
+
+	// Generates a random employee ID
+	public static String randomEmployeeID()
+	{
+		String letters = "ABCDEFGHIJKLM";		
+		return "" + r.nextInt(10) + r.nextInt(10) + r.nextInt(10) + "-" + letters.charAt(r.nextInt(letters.length()));
+	}
+	// Validates the employee id
+	private void checkEmployeeID(String id) {
+		// Makes sure string id is 5 characters long
+		if (id.length() != 5) {
+			this.employeeID = "123-A";
+		}
+
+		// Checks that the string id follows correct format
+		// XXX-L, X:1-9, L:A-M
+		try {
+			if (Character.isDigit(id.charAt(0))
+					&& Character.isDigit(id.charAt(1))
+					&& Character.isDigit(id.charAt(2)) && id.charAt(3) == '-'
+					&& id.charAt(4) >= 'A' && id.charAt(4) <= 'M') {
+				this.employeeID = id;
+			}
+		} catch (StringIndexOutOfBoundsException e) {
+			this.employeeID = "123-A";
+		}
+	}
+
+	// Checks the weekly earnings of employee
+	private void checkWeeklyEarnings(double earnings) {
+		if (earnings >= MIN_WEEKLY_EARNINGS && earnings <= MAX_WEEKLY_EARNINGS) {
+			this.weeklyEarnings = earnings;
+		} else
+			this.weeklyEarnings = MIN_WEEKLY_EARNINGS;
+	}
+
+	// Checks the year employee hired
+	private void checkHiredYear(int year) {
+		if (year >= MIN_HIRE_YEAR && year <= CURRENT_YEAR) {
+			this.hireYear = year;
+		} else
+			this.hireYear = MIN_HIRE_YEAR;
+	}
+
+	// Returns the name
+	public String getName() {
+		return employeeName;
+	}
+
+	// Returns the year hired
+	public int getYear() {
+		return hireYear;
+	}
+	
+	// Returns the weekly earnings
+	public double getWeeklyEarnings()
+	{
+		return weeklyEarnings;
+	}
+
+	// Changes the name
+	public void setName(String name) {
+		this.employeeName = name;
+	}
+
+	// Changes the year hired
+	public void setYear(int year) {
+		checkHiredYear(year);
+	}
+
+	// Changes the weekly earnings
+	public void setWeeklyEarnings(double earnings) {
+		checkWeeklyEarnings(earnings);
+	}
+
+	// Changes employee ID
+	public void setEmployeeID(String id) {
+		checkEmployeeID(id);
+	}
+
+	// toString method
+	public String toString() {
+		return "Name: " + this.employeeName + "\tID: " + this.employeeID + "\tWeekly Earnings: " + this.weeklyEarnings + "\t\tHire year: " + this.hireYear;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Employee other = (Employee) obj;
+		if (employeeID == null) {
+			if (other.employeeID != null)
+				return false;
+		} else if (!employeeID.equals(other.employeeID))
+			return false;
+		if (employeeName == null) {
+			if (other.employeeName != null)
+				return false;
+		} else if (!employeeName.equals(other.employeeName))
+			return false;
+		if (hireYear != other.hireYear)
+			return false;
+		if (Double.doubleToLongBits(weeklyEarnings) != Double
+				.doubleToLongBits(other.weeklyEarnings))
+			return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((employeeID == null) ? 0 : employeeID.hashCode());
+		result = prime * result
+				+ ((employeeName == null) ? 0 : employeeName.hashCode());
+		result = prime * result + hireYear;
+		long temp;
+		temp = Double.doubleToLongBits(weeklyEarnings);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}	
+}
